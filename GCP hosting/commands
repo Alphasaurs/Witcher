@@ -1,0 +1,6 @@
+STEP 1
+Deploy WordPress Website by Bitnami
+(use us west-1-b or free tier->f1 micro->ssd->10->allow http &https)
+you will wordpress login detail as well as compute engine
+STEP 2
+Create a Static IP Address & Setup Domain Name to point to the website.
