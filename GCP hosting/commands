@@ -7,6 +7,49 @@ STEP 2
 Create a Static IP Address & Setup Domain Name to point to the website.
 (VPC network->external ip addresses->change epiphermal to static->name anything)
 (link this ip to your domain name->cloud dns->create zone->
-zone name->anyname
+1.zone name->anyname
 dns name ->your domain
 dnssec->off
+save
+2.add record list
+dns name ->don't write anything
+resource record type->A
+same for ttl,ttl unit
+ipv4->use static in step 2
+save
+3.add record list
+dns name ->www
+resource record type->CNAME
+same for ttl,ttl unit
+canoical name->anything
+save
+NOW copy ns 4 server to your domain provider
+
+STEP 3
+Create SSL Certificate & Setup SSL Certificate AutoRenew
+sudo /opt/bitnami/letsencrypt/scripts/generate-certificate.sh -m yourmail@gmail.com -d yourdomain.com -d www.yourdomain.com
+sudo nano /opt/bitnami/apache2/conf/bitnami/bitnami.conf
+add below documentroot
+RewriteEngine On 
+RewriteCond %{HTTPS} !=on 
+RewriteRule ^/(.*) https://www.yourdomain.com/$1 [R,L]
+save
+sudo /opt/bitnami/ctlscript.sh restart apache
+
+STEP 4
+remove banner
+sudo /opt/bitnami/apps/wordpress/bnconfig --disable_banner 1
+sudo /opt/bitnami/ctlscript.sh restart apache
+
+STEP 5
+login to wordpress
+Install WordPress Theme & Really Simple SSL Plugin
+(Settings->configuretion enable->enable mixed cintent fixer and stop editing)
+When installing the Really Simple SSL Plugin, the plugin needed write access to the wp-config.php file, we did this step:
+sudo chown daemon:daemon /opt/bitnami/apps/wordpress/htdocs/wp-config.php
+
+
+note--www.gtmetrix.com your website performance
+you can improve your website using CDN but it will cancel auto renewal of ssl in step 3
+www.CloudFlare.com/CDN
+
